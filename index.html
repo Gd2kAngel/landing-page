@@ -1,14 +1,1950 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!doctype html>
+<html lang="pt-br" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <title>Landing Demo</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Portfólio profissional - Landing pages e sites modernos." />
+  <title>Portfólio • Gabriel (Landing Pages & Sites)</title>
+
+  <style>
+    /* =========================================================
+       DESIGN TOKENS
+    ========================================================= */
+    :root{
+      --bg: #0b1220;
+      --surface: rgba(255,255,255,0.06);
+      --surface-2: rgba(255,255,255,0.09);
+      --border: rgba(148,163,184,0.22);
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+
+      --primary: #3b82f6;
+      --primary-2: #2563eb;
+      --accent: #22c55e;
+      --danger: #ef4444;
+      --warn: #f59e0b;
+
+      --radius: 16px;
+      --radius-sm: 12px;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --shadow-soft: 0 10px 28px rgba(0,0,0,.28);
+
+      --grid-max: 1120px;
+      --transition: 180ms ease;
+      --focus: 0 0 0 4px rgba(59,130,246,.22);
+
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    html[data-theme="light"]{
+      --bg: #f4f7fb;
+      --surface: rgba(2,6,23,0.04);
+      --surface-2: rgba(2,6,23,0.06);
+      --border: rgba(2,6,23,0.12);
+      --text: #0f172a;
+      --muted: #475569;
+
+      --shadow: 0 18px 60px rgba(2,6,23,.12);
+      --shadow-soft: 0 10px 28px rgba(2,6,23,.10);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: var(--font);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(59,130,246,.25), transparent 60%),
+        radial-gradient(1000px 600px at 110% 0%, rgba(34,197,94,.18), transparent 55%),
+        radial-gradient(900px 500px at 30% 110%, rgba(245,158,11,.14), transparent 55%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      overflow-x:hidden;
+    }
+
+    a{ color:inherit; text-decoration:none; }
+    button, input, textarea{ font-family:inherit; }
+    ::selection{ background: rgba(59,130,246,.35); }
+
+    .container{
+      width: min(var(--grid-max), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    /* =========================================================
+       TOP BAR / NAV
+    ========================================================= */
+    .topbar{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(to bottom, rgba(2,6,23,.65), rgba(2,6,23,.25));
+      border-bottom: 1px solid var(--border);
+    }
+    html[data-theme="light"] .topbar{
+      background: linear-gradient(to bottom, rgba(244,247,251,.9), rgba(244,247,251,.6));
+    }
+
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 12px 0;
+      gap: 14px;
+    }
+
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      min-width: 220px;
+    }
+    .logo{
+      width:42px; height:42px; border-radius: 14px;
+      background: conic-gradient(from 210deg, var(--primary), var(--accent), var(--warn), var(--primary));
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow:hidden;
+    }
+    .logo::after{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), transparent 55%);
+      opacity:.55;
+      transform: rotate(8deg);
+    }
+    .brand strong{ font-size: 14px; letter-spacing:.3px; }
+    .brand span{ display:block; font-size: 12px; color: var(--muted); margin-top: -2px; }
+
+    .navlinks{
+      display:flex;
+      align-items:center;
+      gap: 6px;
+      padding: 6px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--surface);
+    }
+    .navlinks a{
+      padding: 10px 12px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 13px;
+      transition: background var(--transition), color var(--transition);
+      outline: none;
+    }
+    .navlinks a:hover{ background: var(--surface-2); color: var(--text); }
+    .navlinks a.active{ background: rgba(59,130,246,.18); color: var(--text); }
+
+    .navactions{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      min-width: 220px;
+      justify-content:flex-end;
+    }
+
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 13px;
+      cursor:pointer;
+      transition: transform var(--transition), background var(--transition), border var(--transition);
+      user-select:none;
+    }
+    .btn:hover{ background: var(--surface-2); transform: translateY(-1px); }
+    .btn:active{ transform: translateY(0px) scale(.99); }
+    .btn:focus{ outline:none; box-shadow: var(--focus); }
+    .btn.primary{
+      border-color: rgba(59,130,246,.45);
+      background: linear-gradient(135deg, rgba(59,130,246,.22), rgba(34,197,94,.10));
+    }
+    .btn.ghost{
+      background: transparent;
+    }
+    .btn.small{ padding: 9px 10px; border-radius: 12px; }
+
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .burger{
+      display:none;
+      width:44px; height:44px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      cursor:pointer;
+    }
+    .burger:focus{ outline:none; box-shadow: var(--focus); }
+    .burger span{
+      display:block;
+      width:18px; height:2px;
+      background: var(--text);
+      margin: 5px auto;
+      border-radius: 2px;
+      opacity:.9;
+    }
+
+    /* Mobile menu */
+    .mobilepanel{
+      display:none;
+      padding: 10px 0 16px;
+    }
+    .mobilepanel .navlinks{
+      border-radius: 16px;
+      flex-wrap: wrap;
+      justify-content:center;
+    }
+
+    @media (max-width: 980px){
+      .navlinks{ display:none; }
+      .burger{ display:inline-flex; align-items:center; justify-content:center; }
+      .mobilepanel{ display:block; }
+      .brand{ min-width: auto; }
+      .navactions{ min-width:auto; }
+    }
+
+    /* =========================================================
+       SECTIONS
+    ========================================================= */
+    section{
+      padding: 56px 0;
+    }
+    .section-title{
+      display:flex; align-items:flex-end; justify-content:space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .section-title h2{
+      margin:0;
+      font-size: 28px;
+      letter-spacing: -.4px;
+    }
+    .section-title p{
+      margin:0;
+      color: var(--muted);
+      max-width: 520px;
+      font-size: 14px;
+    }
+
+    /* =========================================================
+       HERO
+    ========================================================= */
+    .hero{
+      padding: 44px 0 22px;
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    @media(max-width: 980px){
+      .hero-grid{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--surface), rgba(255,255,255,0.02));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+      overflow:hidden;
+    }
+    .hero-main{
+      padding: 22px;
+      position: relative;
+      min-height: 320px;
+    }
+    .hero-main::before{
+      content:"";
+      position:absolute; inset: -2px;
+      background:
+        radial-gradient(600px 240px at 10% 5%, rgba(59,130,246,.22), transparent 55%),
+        radial-gradient(500px 220px at 85% 0%, rgba(34,197,94,.16), transparent 55%);
+      pointer-events:none;
+      opacity:.9;
+    }
+
+    .hero-kicker{
+      display:flex; flex-wrap:wrap; gap:10px;
+      align-items:center;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-kicker .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(59,130,246,.42);
+      background: rgba(59,130,246,.12);
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing:.2px;
+    }
+    .dot{
+      width:9px; height:9px; border-radius:999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(34,197,94,.16);
+    }
+
+    .hero-main h1{
+      margin: 14px 0 10px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.1;
+      letter-spacing: -1px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-main h1 .grad{
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero-main p{
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 680px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-ctas{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin-top: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-stats{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+      position: relative;
+      z-index: 1;
+    }
+    @media(max-width: 560px){
+      .hero-stats{ grid-template-columns: 1fr; }
+    }
+    .stat{
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .stat strong{
+      font-size: 20px;
+      letter-spacing: -.4px;
+      display:block;
+    }
+    .stat span{
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .hero-side{
+      display:grid;
+      gap: 12px;
+    }
+
+    .mini{
+      padding: 16px;
+    }
+    .mini h3{
+      margin:0 0 6px;
+      font-size: 15px;
+      letter-spacing: -.2px;
+    }
+    .mini p{
+      margin:0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .spark{
+      margin-top: 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(59,130,246,.16), rgba(255,255,255,0.02));
+      overflow:hidden;
+      height: 120px;
+      position: relative;
+    }
+    .spark canvas{ width:100%; height:100%; display:block; }
+
+    /* =========================================================
+       ABOUT + SKILLS
+    ========================================================= */
+    .grid-2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+    @media(max-width: 980px){
+      .grid-2{ grid-template-columns: 1fr; }
+    }
+    .about{
+      padding: 18px;
+    }
+    .about .pill-row{ display:flex; flex-wrap:wrap; gap:8px; margin-top: 12px; }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .pill b{ color: var(--text); }
+
+    .skills{
+      padding: 18px;
+    }
+    .skill{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin-top: 10px;
+    }
+    .skill:first-child{ margin-top: 0; }
+    .skill .left{ display:flex; align-items:center; gap: 10px; }
+    .icon{
+      width: 42px; height: 42px;
+      border-radius: 14px;
+      border: 1px solid rgba(59,130,246,.32);
+      background: rgba(59,130,246,.12);
+      display:grid; place-items:center;
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
+    .skill strong{ display:block; font-size: 14px; }
+    .skill span{ display:block; font-size: 12px; color: var(--muted); margin-top: 1px; }
+
+    .bar{
+      width: 160px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(148,163,184,.18);
+      overflow:hidden;
+      border: 1px solid var(--border);
+    }
+    .bar > i{
+      display:block;
+      height:100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 999px;
+      transition: width 900ms ease;
+    }
+
+    /* =========================================================
+       PROJECTS
+    ========================================================= */
+    .toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      align-items:center;
+      justify-content:space-between;
+      margin: 12px 0 18px;
+    }
+    .search{
+      flex: 1;
+      min-width: 240px;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .search input{
+      border:0;
+      background: transparent;
+      color: var(--text);
+      outline:none;
+      width: 100%;
+      font-size: 14px;
+    }
+    .filters{
+      display:flex; flex-wrap:wrap; gap: 8px;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    .filter{
+      padding: 9px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      cursor:pointer;
+      font-weight: 800;
+      font-size: 12px;
+      color: var(--muted);
+      transition: background var(--transition), transform var(--transition), color var(--transition);
+    }
+    .filter:hover{ background: var(--surface-2); transform: translateY(-1px); color: var(--text); }
+    .filter.active{ background: rgba(34,197,94,.14); border-color: rgba(34,197,94,.35); color: var(--text); }
+
+    .projects-grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media(max-width: 980px){
+      .projects-grid{ grid-template-columns: 1fr 1fr; }
+    }
+    @media(max-width: 560px){
+      .projects-grid{ grid-template-columns: 1fr; }
+    }
+
+    .project{
+      padding: 14px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      position: relative;
+      transform: translateY(0);
+      transition: transform var(--transition), border var(--transition), background var(--transition);
+    }
+    .project:hover{
+      transform: translateY(-3px);
+      background: linear-gradient(180deg, var(--surface-2), rgba(255,255,255,0.02));
+      border-color: rgba(59,130,246,.28);
+    }
+
+    .thumb{
+      height: 150px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background:
+        radial-gradient(300px 140px at 20% 10%, rgba(59,130,246,.30), transparent 60%),
+        radial-gradient(260px 140px at 80% 0%, rgba(34,197,94,.22), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      position: relative;
+      overflow:hidden;
+    }
+    .thumb::after{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(circle at 25% 20%, rgba(255,255,255,.25), transparent 60%);
+      opacity:.55;
+    }
+    .tagrow{ display:flex; flex-wrap:wrap; gap: 6px; }
+    .tag{
+      font-size: 11px;
+      font-weight: 800;
+      padding: 7px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+    }
+    .project h3{
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: -.3px;
+    }
+    .project p{
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      min-height: 40px;
+    }
+    .project .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      margin-top: auto;
+    }
+    .meta{
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* =========================================================
+       SERVICES / PRICING
+    ========================================================= */
+    .pricing{
+      display:grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 12px;
+    }
+    @media(max-width: 980px){
+      .pricing{ grid-template-columns: 1fr; }
+    }
+    .plan{
+      padding: 16px;
+      position: relative;
+      overflow:hidden;
+    }
+    .plan.recommended{
+      border-color: rgba(34,197,94,.38);
+      background: linear-gradient(180deg, rgba(34,197,94,.10), rgba(255,255,255,0.02));
+    }
+    .plan .top{
+      display:flex; align-items:flex-start; justify-content:space-between; gap: 12px;
+    }
+    .plan h3{ margin:0; font-size: 16px; letter-spacing:-.2px; }
+    .plan .price{
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -.8px;
+      margin: 10px 0 4px;
+    }
+    .plan .desc{ margin:0; color: var(--muted); font-size: 13px; }
+    .list{
+      margin: 12px 0 0;
+      padding: 0;
+      list-style:none;
+      display:grid;
+      gap: 8px;
+    }
+    .list li{
+      display:flex; gap: 10px; align-items:flex-start;
+      font-size: 13px;
+      color: var(--muted);
+      padding: 10px 10px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .check{
+      width:18px; height:18px; border-radius: 6px;
+      background: rgba(34,197,94,.16);
+      border: 1px solid rgba(34,197,94,.28);
+      display:grid; place-items:center;
+      color: var(--accent);
+      font-weight: 900;
+      flex: 0 0 18px;
+      margin-top: 1px;
+    }
+
+    /* =========================================================
+       TESTIMONIALS
+    ========================================================= */
+    .carousel{
+      position: relative;
+      overflow:hidden;
+    }
+    .track{
+      display:flex;
+      gap: 12px;
+      transition: transform 420ms ease;
+      will-change: transform;
+    }
+    .test{
+      min-width: calc((100% - 24px) / 3);
+      padding: 16px;
+    }
+    @media(max-width: 980px){
+      .test{ min-width: calc((100% - 12px) / 2); }
+    }
+    @media(max-width: 560px){
+      .test{ min-width: 100%; }
+    }
+    .test p{ margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+    .test .who{
+      display:flex; align-items:center; gap: 10px;
+      margin-top: 12px;
+    }
+    .avatar{
+      width: 42px; height:42px; border-radius: 14px;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(59,130,246,.22), rgba(34,197,94,.12));
+    }
+    .who strong{ display:block; font-size: 13px; }
+    .who span{ display:block; font-size: 12px; color: var(--muted); margin-top: -2px; }
+    .car-controls{
+      display:flex; gap: 10px; justify-content:flex-end; margin-top: 10px;
+    }
+
+    /* =========================================================
+       CONTACT
+    ========================================================= */
+    .contact-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+    @media(max-width: 980px){
+      .contact-grid{ grid-template-columns: 1fr; }
+    }
+
+    .contact-card{ padding: 18px; }
+    .contact-card h3{ margin:0 0 6px; font-size: 16px; }
+    .contact-card p{ margin:0; color: var(--muted); font-size: 13px; }
+    .contact-actions{ display:flex; flex-wrap:wrap; gap: 10px; margin-top: 12px; }
+
+    form{
+      display:grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .field{
+      display:grid;
+      gap: 6px;
+    }
+    label{ font-weight: 800; font-size: 12px; color: var(--muted); }
+    input, textarea{
+      width: 100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      outline:none;
+      transition: box-shadow var(--transition), border var(--transition), background var(--transition);
+      font-size: 14px;
+    }
+    input:focus, textarea:focus{ box-shadow: var(--focus); border-color: rgba(59,130,246,.45); background: var(--surface-2); }
+    textarea{ min-height: 110px; resize: vertical; }
+
+    .hint{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: -2px;
+    }
+    .alert{
+      display:none;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .alert.ok{
+      border-color: rgba(34,197,94,.35);
+      background: rgba(34,197,94,.10);
+      color: var(--text);
+    }
+    .alert.err{
+      border-color: rgba(239,68,68,.35);
+      background: rgba(239,68,68,.10);
+      color: var(--text);
+    }
+
+    /* =========================================================
+       FOOTER + UTIL
+    ========================================================= */
+    footer{
+      padding: 26px 0 34px;
+      border-top: 1px solid var(--border);
+      background: linear-gradient(to top, rgba(2,6,23,.32), transparent);
+    }
+    html[data-theme="light"] footer{
+      background: linear-gradient(to top, rgba(244,247,251,.9), transparent);
+    }
+    .footer-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 14px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .reveal{
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 560ms ease, transform 560ms ease;
+    }
+    .reveal.show{
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast{
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      z-index: 80;
+      width: min(360px, calc(100% - 32px));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--surface);
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+      padding: 12px;
+      display:none;
+    }
+    .toast strong{ display:block; font-size: 13px; }
+    .toast span{ display:block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .toast.show{ display:block; animation: pop 220ms ease; }
+    @keyframes pop{
+      from{ transform: translateY(6px); opacity:.0; }
+      to{ transform: translateY(0); opacity:1; }
+    }
+
+    .backtop{
+      position: fixed;
+      bottom: 18px;
+      left: 18px;
+      z-index: 60;
+      display:none;
+    }
+    .backtop.show{ display:block; }
+
+    /* =========================================================
+       MODAL
+    ========================================================= */
+    .modal{
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(2,6,23,.6);
+      backdrop-filter: blur(8px);
+      display:none;
+      padding: 18px;
+    }
+    .modal.show{ display:grid; place-items:center; }
+    .modal-card{
+      width: min(920px, 100%);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--surface-2), var(--surface));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .modal-head{
+      display:flex; justify-content:space-between; align-items:flex-start; gap: 12px;
+      padding: 14px 14px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-head h3{ margin:0; font-size: 16px; }
+    .modal-head p{ margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+    .modal-body{
+      padding: 14px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 12px;
+    }
+    @media(max-width: 980px){
+      .modal-body{ grid-template-columns: 1fr; }
+    }
+    .modal-preview{
+      height: 240px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background:
+        radial-gradient(400px 180px at 20% 10%, rgba(59,130,246,.30), transparent 60%),
+        radial-gradient(340px 180px at 80% 0%, rgba(34,197,94,.22), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      position: relative;
+      overflow:hidden;
+    }
+    .modal-preview::after{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.28), transparent 60%);
+      opacity:.5;
+    }
+    .modal-info{
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .modal-info .row{
+      display:flex;
+      justify-content:space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 8px 0;
+      border-bottom: 1px dashed rgba(148,163,184,.18);
+    }
+    .modal-info .row:last-child{ border-bottom:0; }
+    .modal-info .row b{ color: var(--text); }
+
+  </style>
 </head>
+
 <body>
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="container">
+      <div class="nav">
+        <a class="brand" href="#inicio" aria-label="Ir para o início">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <strong>Gabriel • Web</strong>
+            <span>Landing pages • Portfólios • Sites</span>
+          </div>
+        </a>
 
-  <h1>Minha Landing Page</h1>
-  <p>Projeto de demonstração</p>
+        <nav class="navlinks" aria-label="Navegação principal">
+          <a href="#sobre">Sobre</a>
+          <a href="#skills">Skills</a>
+          <a href="#projetos">Projetos</a>
+          <a href="#servicos">Serviços</a>
+          <a href="#contato">Contato</a>
+        </nav>
 
+        <div class="navactions">
+          <button id="themeBtn" class="btn small ghost" type="button" aria-label="Alternar tema">
+            🌙 <span id="themeLabel">Tema</span>
+          </button>
+          <a class="btn primary" href="#contato">Pedir orçamento</a>
+          <button id="burger" class="burger" type="button" aria-label="Abrir menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+
+      <div id="mobilePanel" class="mobilepanel" hidden>
+        <nav class="navlinks" aria-label="Navegação mobile">
+          <a href="#sobre">Sobre</a>
+          <a href="#skills">Skills</a>
+          <a href="#projetos">Projetos</a>
+          <a href="#servicos">Serviços</a>
+          <a href="#contato">Contato</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <main id="inicio" class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="card hero-main reveal">
+          <div class="hero-kicker">
+            <span class="badge"><span class="dot"></span> Disponível para freelas</span>
+            <span class="chip">Prazo rápido • Layout moderno • Responsivo</span>
+          </div>
+
+          <h1>Crio páginas <span class="grad">profissionais</span> que passam confiança e convertem.</h1>
+          <p>
+            Landing pages, portfólios e sites institucionais com visual moderno, boa performance e foco em clareza.
+            Ideal pra quem quer “aparecer bem” e fechar mais clientes.
+          </p>
+
+          <div class="hero-ctas">
+            <a class="btn primary" href="#projetos">Ver projetos</a>
+            <button class="btn" id="copyEmailBtn" type="button">Copiar e-mail</button>
+            <a class="btn" href="#servicos">Planos</a>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat">
+              <strong data-count="12" data-suffix="+">0</strong>
+              <span>Páginas entregues</span>
+            </div>
+            <div class="stat">
+              <strong data-count="98" data-suffix="%">0</strong>
+              <span>Responsivo e otimizado</span>
+            </div>
+            <div class="stat">
+              <strong data-count="24" data-suffix="h">0</strong>
+              <span>Tempo médio de resposta</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="hero-side">
+          <div class="card mini reveal">
+            <h3>Resumo rápido</h3>
+            <p>Foco em páginas leves, responsivas e com estrutura pronta pra você divulgar. Entrego com organização e “acabamento de empresa”.</p>
+            <div class="pill-row" style="margin-top:12px">
+              <span class="pill">⚡ <b>Performance</b> acima de tudo</span>
+              <span class="pill">🎨 <b>UI moderna</b> e limpa</span>
+              <span class="pill">📱 <b>Mobile-first</b></span>
+              <span class="pill">🧩 <b>Componentes</b> reutilizáveis</span>
+            </div>
+          </div>
+
+          <div class="card mini reveal">
+            <h3>Preview interativo</h3>
+            <p>Um “sparkline” animado só pra mostrar que o portfólio é vivo 😄</p>
+            <div class="spark" aria-hidden="true">
+              <canvas id="sparkCanvas"></canvas>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- ABOUT + SKILLS -->
+  <section id="sobre">
+    <div class="container">
+      <div class="section-title">
+        <div>
+          <h2>Sobre</h2>
+          <p>Um texto que passa confiança e deixa claro o que você resolve.</p>
+        </div>
+        <span class="chip">⚙️ Entrega com “padrão profissional”</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="card about reveal">
+          <h3 style="margin:0 0 10px;font-size:16px;">Quem sou eu</h3>
+          <p style="margin:0;color:var(--muted);font-size:14px;">
+            Sou desenvolvedor focado em páginas modernas e bem acabadas. Minha prioridade é: visual limpo, experiência fluida,
+            organização e entrega com qualidade. Eu gosto do “feeling de empresa”: tudo consistente, responsivo e com atenção aos detalhes.
+          </p>
+
+          <div class="pill-row">
+            <span class="pill">🧠 <b>Clareza</b> no layout</span>
+            <span class="pill">🧱 <b>Estrutura</b> bem organizada</span>
+            <span class="pill">🔒 <b>Boas práticas</b> básicas</span>
+            <span class="pill">📌 <b>Escopo</b> definido</span>
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+            <a class="btn primary" href="#contato">Vamos conversar</a>
+            <a class="btn" href="#servicos">Ver serviços</a>
+          </div>
+        </div>
+
+        <div id="skills" class="card skills reveal">
+          <h3 style="margin:0 0 12px;font-size:16px;">Skills</h3>
+
+          <div class="skill" data-skill="92">
+            <div class="left">
+              <div class="icon">H</div>
+              <div>
+                <strong>HTML semântico</strong>
+                <span>Estrutura limpa e acessível</span>
+              </div>
+            </div>
+            <div class="bar" aria-hidden="true"><i></i></div>
+          </div>
+
+          <div class="skill" data-skill="88">
+            <div class="left">
+              <div class="icon">C</div>
+              <div>
+                <strong>CSS moderno</strong>
+                <span>Design tokens, responsivo, animações</span>
+              </div>
+            </div>
+            <div class="bar" aria-hidden="true"><i></i></div>
+          </div>
+
+          <div class="skill" data-skill="82">
+            <div class="left">
+              <div class="icon">JS</div>
+              <div>
+                <strong>JavaScript</strong>
+                <span>Interações, componentes e dados</span>
+              </div>
+            </div>
+            <div class="bar" aria-hidden="true"><i></i></div>
+          </div>
+
+          <div class="skill" data-skill="76">
+            <div class="left">
+              <div class="icon">UI</div>
+              <div>
+                <strong>UI/UX</strong>
+                <span>Layout limpo e objetivo</span>
+              </div>
+            </div>
+            <div class="bar" aria-hidden="true"><i></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projetos">
+    <div class="container">
+      <div class="section-title">
+        <div>
+          <h2>Projetos</h2>
+          <p>Cards gerados por dados no JS. Trocar/editar projeto fica muito fácil.</p>
+        </div>
+        <span class="chip">🔎 Busca + filtro + modal</span>
+      </div>
+
+      <div class="toolbar">
+        <div class="search">
+          🔍
+          <input id="projectSearch" type="text" placeholder="Buscar projeto (ex: clínica, advocacia, loja)..." autocomplete="off" />
+        </div>
+        <div class="filters" id="filters"></div>
+      </div>
+
+      <div id="projectsGrid" class="projects-grid"></div>
+
+      <div style="margin-top:14px;color:var(--muted);font-size:13px" class="reveal">
+        Quer que eu coloque aqui os seus projetos reais e o link do Vercel/GitHub? Eu organizo esse JSON pra você rapidinho.
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="servicos">
+    <div class="container">
+      <div class="section-title">
+        <div>
+          <h2>Serviços</h2>
+          <p>Você pode usar esses planos como base (ajuste valores e regras).</p>
+        </div>
+        <span class="chip">💰 Preço claro = menos dor de cabeça</span>
+      </div>
+
+      <div class="pricing">
+        <div class="card plan reveal">
+          <div class="top">
+            <div>
+              <h3>Portfólio</h3>
+              <p class="desc">Ideal pra dev, designer ou profissional autônomo.</p>
+            </div>
+            <span class="chip">⭐ Popular</span>
+          </div>
+          <div class="price">R$ 250</div>
+          <p class="desc">Entrega rápida com seção de projetos e contato.</p>
+          <ul class="list">
+            <li><span class="check">✓</span> 1 página (single-page)</li>
+            <li><span class="check">✓</span> Responsivo + animações suaves</li>
+            <li><span class="check">✓</span> Seções: Sobre, Skills, Projetos, Contato</li>
+            <li><span class="check">✓</span> Ajustes de texto/imagens (até 2 rodadas)</li>
+          </ul>
+          <div style="margin-top:12px">
+            <a class="btn primary" href="#contato">Quero esse</a>
+          </div>
+        </div>
+
+        <div class="card plan recommended reveal">
+          <div class="top">
+            <div>
+              <h3>Landing Page</h3>
+              <p class="desc">Foco em conversão e credibilidade do seu serviço.</p>
+            </div>
+            <span class="chip">✅ Recomendo</span>
+          </div>
+          <div class="price">R$ 300</div>
+          <p class="desc">Copy, prova social, CTA e seção de oferta.</p>
+          <ul class="list">
+            <li><span class="check">✓</span> Estrutura otimizada pra conversão</li>
+            <li><span class="check">✓</span> Seção de benefícios + depoimentos</li>
+            <li><span class="check">✓</span> CTA com WhatsApp / formulário</li>
+            <li><span class="check">✓</span> SEO básico (título/descrição)</li>
+          </ul>
+          <div style="margin-top:12px">
+            <a class="btn primary" href="#contato">Quero esse</a>
+          </div>
+        </div>
+
+        <div class="card plan reveal">
+          <div class="top">
+            <div>
+              <h3>Manutenção</h3>
+              <p class="desc">Ajustes e pequenas alterações mensais.</p>
+            </div>
+            <span class="chip">🔁 Recorrente</span>
+          </div>
+          <div class="price">R$ 100<span style="font-size:13px;font-weight:800;color:var(--muted)">/mês</span></div>
+          <p class="desc">Perfeito pro seu modelo de “layout e ajustes”.</p>
+          <ul class="list">
+            <li><span class="check">✓</span> Até X ajustes simples (defina um limite)</li>
+            <li><span class="check">✓</span> Troca de textos/cores/imagens</li>
+            <li><span class="check">✓</span> Pequenas seções (sem lógica complexa)</li>
+            <li><span class="check">✓</span> Suporte por WhatsApp</li>
+          </ul>
+          <div style="margin-top:12px">
+            <a class="btn primary" href="#contato">Quero esse</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section>
+    <div class="container">
+      <div class="section-title">
+        <div>
+          <h2>Depoimentos</h2>
+          <p>Coloque depoimentos reais quando você tiver — isso aumenta MUITO a confiança.</p>
+        </div>
+        <span class="chip">🗣️ Prova social</span>
+      </div>
+
+      <div class="card carousel reveal">
+        <div class="container" style="padding:14px">
+          <div class="track" id="track">
+            <article class="card test">
+              <h3 style="margin:0;font-size:15px;">“Ficou muito profissional”</h3>
+              <p>Layout limpo, rápido e no celular ficou perfeito. A página passou confiança pros meus clientes.</p>
+              <div class="who">
+                <div class="avatar"></div>
+                <div>
+                  <strong>Cliente Exemplo</strong>
+                  <span>Serviços</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card test">
+              <h3 style="margin:0;font-size:15px;">“Entregou rápido e organizado”</h3>
+              <p>Gostei do cuidado com detalhes e da comunicação. Ficou fácil pedir ajustes depois.</p>
+              <div class="who">
+                <div class="avatar"></div>
+                <div>
+                  <strong>Cliente Exemplo</strong>
+                  <span>Autônomo</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card test">
+              <h3 style="margin:0;font-size:15px;">“Página leve e bonita”</h3>
+              <p>Carrega rápido e tem uma cara moderna. Agora uso o link pra enviar no WhatsApp.</p>
+              <div class="who">
+                <div class="avatar"></div>
+                <div>
+                  <strong>Cliente Exemplo</strong>
+                  <span>Comércio</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card test">
+              <h3 style="margin:0;font-size:15px;">“Atendimento fácil”</h3>
+              <p>Fez as mudanças que pedi e deu várias sugestões boas. Recomendo.</p>
+              <div class="who">
+                <div class="avatar"></div>
+                <div>
+                  <strong>Cliente Exemplo</strong>
+                  <span>Consultoria</span>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="car-controls">
+            <button class="btn small" id="prevTest" type="button">←</button>
+            <button class="btn small" id="nextTest" type="button">→</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contato">
+    <div class="container">
+      <div class="section-title">
+        <div>
+          <h2>Contato</h2>
+          <p>Formulário com validação no JS. (Você pode trocar pra WhatsApp direto depois.)</p>
+        </div>
+        <span class="chip">📩 Orçamento rápido</span>
+      </div>
+
+      <div class="contact-grid">
+        <div class="card contact-card reveal">
+          <h3>Vamos tirar sua ideia do papel</h3>
+          <p>Me diga o que você faz, o objetivo da página e se já tem logo/cores. Eu te passo um caminho claro e o prazo.</p>
+
+          <div class="contact-actions">
+            <button class="btn primary" id="openWhatsBtn" type="button">Falar no WhatsApp</button>
+            <button class="btn" id="copyLinkBtn" type="button">Copiar link do portfólio</button>
+            <button class="btn" id="downloadBtn" type="button">Baixar checklist</button>
+          </div>
+
+          <div class="alert" id="leftAlert"></div>
+
+          <div style="margin-top:14px">
+            <div class="pill">📌 <b>Dica</b>: tenha um “escopo” simples (1 página, seções, prazo e revisões).</div>
+          </div>
+        </div>
+
+        <div class="card contact-card reveal">
+          <h3>Formulário</h3>
+          <p>Esse envio aqui é “front-end” (sem back-end). Você pode integrar com e-mail depois.</p>
+
+          <form id="contactForm" novalidate>
+            <div class="field">
+              <label for="name">Nome</label>
+              <input id="name" name="name" placeholder="Seu nome" required minlength="2" />
+            </div>
+
+            <div class="field">
+              <label for="email">E-mail</label>
+              <input id="email" name="email" placeholder="seuemail@dominio.com" required />
+              <div class="hint">Dica: depois dá pra integrar com Formspree, EmailJS ou back-end.</div>
+            </div>
+
+            <div class="field">
+              <label for="message">O que você precisa?</label>
+              <textarea id="message" name="message" placeholder="Ex: Quero uma landing page para serviços de contabilidade, com WhatsApp e depoimentos." required minlength="10"></textarea>
+            </div>
+
+            <button class="btn primary" type="submit">Enviar (simulação)</button>
+            <div class="alert" id="formAlert"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-row">
+        <span>© <span id="year"></span> • Gabriel • Portfólio</span>
+        <span>Feito com HTML/CSS/JS • Pronto pra Vercel</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- BACK TO TOP -->
+  <div class="backtop" id="backTop">
+    <button class="btn small" type="button" id="backTopBtn">⬆ Topo</button>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <strong id="toastTitle">Ok</strong>
+    <span id="toastMsg">Mensagem</span>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <div>
+          <h3 id="modalTitle">Projeto</h3>
+          <p id="modalSubtitle">Detalhes</p>
+        </div>
+        <button class="btn small" id="closeModalBtn" type="button">Fechar ✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-preview" id="modalPreview" aria-hidden="true"></div>
+        <div class="modal-info" id="modalInfo"></div>
+      </div>
+      <div style="padding: 0 14px 14px; display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn primary" id="modalLiveBtn" href="#" target="_blank" rel="noreferrer">Abrir demo</a>
+        <a class="btn" id="modalCodeBtn" href="#" target="_blank" rel="noreferrer">Ver código</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================
+       CONFIG (troque aqui com seus dados)
+    ========================================================= */
+    const CONFIG = {
+      owner: "Gabriel",
+      emailToCopy: "bielgsa2004@gmail.com",
+      portfolioUrl: window.location.href,
+      whatsapp: {
+        phone: "5517999999999", // <-- TROQUE (formato DDI+DDD+número)
+        msg: "Olá! Tenho interesse em uma landing page/portfólio. Podemos conversar?"
+      }
+    };
+
+    /* =========================================================
+       PROJECTS DATA (troque/adicione seus projetos)
+    ========================================================= */
+    const projects = [
+      {
+        id: "lp-clinica",
+        title: "Landing Page • Clínica",
+        category: "Landing",
+        summary: "Página moderna com CTA, serviços e prova social.",
+        tags: ["Responsivo", "CTA", "Prova social"],
+        stack: ["HTML", "CSS", "JS"],
+        year: 2025,
+        liveUrl: "https://exemplo.vercel.app",
+        codeUrl: "https://github.com/seuuser/seurepo",
+        highlights: [
+          "Seções focadas em conversão",
+          "Animações suaves e leves",
+          "Botão WhatsApp fixo (opcional)"
+        ]
+      },
+      {
+        id: "pf-dev",
+        title: "Portfólio • Dev",
+        category: "Portfólio",
+        summary: "Portfolio clean, com projetos dinâmicos e filtro.",
+        tags: ["Interativo", "Modal", "Dark/Light"],
+        stack: ["HTML", "CSS", "JS"],
+        year: 2025,
+        liveUrl: "https://exemplo.vercel.app",
+        codeUrl: "https://github.com/seuuser/seurepo",
+        highlights: [
+          "Projetos via JSON",
+          "Tema claro/escuro",
+          "Scroll spy + menu mobile"
+        ]
+      },
+      {
+        id: "site-loja",
+        title: "Site • Loja Local",
+        category: "Institucional",
+        summary: "Site institucional com seções e contato rápido.",
+        tags: ["SEO básico", "Layout moderno"],
+        stack: ["HTML", "CSS", "JS"],
+        year: 2025,
+        liveUrl: "https://exemplo.vercel.app",
+        codeUrl: "https://github.com/seuuser/seurepo",
+        highlights: [
+          "Estrutura pronta pra divulgar",
+          "Conteúdo claro e objetivo",
+          "Formulário (front-end) + WhatsApp"
+        ]
+      },
+      {
+        id: "lp-adv",
+        title: "Landing Page • Advocacia",
+        category: "Landing",
+        summary: "Credibilidade, serviços e chamada para contato.",
+        tags: ["Confiança", "Depoimentos"],
+        stack: ["HTML", "CSS", "JS"],
+        year: 2025,
+        liveUrl: "https://exemplo.vercel.app",
+        codeUrl: "https://github.com/seuuser/seurepo",
+        highlights: [
+          "Seção de diferenciais",
+          "Depoimentos e CTA",
+          "Layout premium"
+        ]
+      },
+      {
+        id: "pf-foto",
+        title: "Portfólio • Fotografia",
+        category: "Portfólio",
+        summary: "Galeria e apresentação de serviços.",
+        tags: ["Galeria", "Leve"],
+        stack: ["HTML", "CSS", "JS"],
+        year: 2025,
+        liveUrl: "https://exemplo.vercel.app",
+        codeUrl: "https://github.com/seuuser/seurepo",
+        highlights: [
+          "Grid responsivo",
+          "Destaques por categoria",
+          "Contato rápido"
+        ]
+      },
+      {
+        id: "site-consult",
+        title: "Site • Consultoria",
+        category: "Institucional",
+        summary: "Página com oferta, processo e contato.",
+        tags: ["Processo", "Oferta"],
+        stack: ["HTML", "CSS", "JS"],
+        year: 2025,
+        liveUrl: "https://exemplo.vercel.app",
+        codeUrl: "https://github.com/seuuser/seurepo",
+        highlights: [
+          "Seção de processo",
+          "Planos e CTA",
+          "Design consistente"
+        ]
+      },
+    ];
+
+    /* =========================================================
+       UTIL
+    ========================================================= */
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+    function toast(title, msg, ms=2400){
+      const t = $("#toast");
+      $("#toastTitle").textContent = title;
+      $("#toastMsg").textContent = msg;
+      t.classList.add("show");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(()=> t.classList.remove("show"), ms);
+    }
+
+    async function copyToClipboard(text){
+      try{
+        await navigator.clipboard.writeText(text);
+        return true;
+      }catch{
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try{ document.execCommand("copy"); } finally { ta.remove(); }
+        return true;
+      }
+    }
+
+    /* =========================================================
+       THEME
+    ========================================================= */
+    const themeBtn = $("#themeBtn");
+    const themeLabel = $("#themeLabel");
+
+    function setTheme(theme){
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem("theme", theme);
+      themeLabel.textContent = theme === "dark" ? "Escuro" : "Claro";
+      themeBtn.firstChild.textContent = theme === "dark" ? "🌙" : "☀️";
+    }
+
+    const savedTheme = localStorage.getItem("theme");
+    if(savedTheme) setTheme(savedTheme);
+
+    themeBtn.addEventListener("click", ()=>{
+      const current = document.documentElement.getAttribute("data-theme") || "dark";
+      setTheme(current === "dark" ? "light" : "dark");
+    });
+
+    /* =========================================================
+       MOBILE MENU
+    ========================================================= */
+    const burger = $("#burger");
+    const mobilePanel = $("#mobilePanel");
+    burger.addEventListener("click", ()=>{
+      const open = !mobilePanel.hasAttribute("hidden");
+      if(open){
+        mobilePanel.setAttribute("hidden", "");
+      }else{
+        mobilePanel.removeAttribute("hidden");
+      }
+    });
+
+    // close mobile after click
+    mobilePanel.addEventListener("click", (e)=>{
+      if(e.target.matches("a")){
+        mobilePanel.setAttribute("hidden","");
+      }
+    });
+
+    /* =========================================================
+       NAV ACTIVE (scroll spy)
+    ========================================================= */
+    const sections = ["#sobre","#skills","#projetos","#servicos","#contato"].map(s => $(s));
+    const navAnchors = $$(".navlinks a").filter(a => a.getAttribute("href")?.startsWith("#"));
+
+    function setActiveNav(id){
+      navAnchors.forEach(a=>{
+        a.classList.toggle("active", a.getAttribute("href") === id);
+      });
+    }
+
+    const spy = new IntersectionObserver((entries)=>{
+      entries.forEach(ent=>{
+        if(ent.isIntersecting){
+          setActiveNav("#" + ent.target.id);
+        }
+      });
+    }, { root: null, threshold: 0.35 });
+
+    sections.forEach(s => s && spy.observe(s));
+
+    /* =========================================================
+       REVEAL ANIMATIONS
+    ========================================================= */
+    const revealEls = $$(".reveal");
+    const rev = new IntersectionObserver((entries)=>{
+      entries.forEach(ent=>{
+        if(ent.isIntersecting){
+          ent.target.classList.add("show");
+          rev.unobserve(ent.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => rev.observe(el));
+
+    /* =========================================================
+       STATS COUNTUP
+    ========================================================= */
+    function animateCount(el){
+      const target = Number(el.dataset.count || "0");
+      const suffix = el.dataset.suffix || "";
+      const duration = 900;
+      const start = performance.now();
+      const from = 0;
+
+      function tick(now){
+        const p = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const val = Math.round(from + (target - from) * eased);
+        el.textContent = val + suffix;
+        if(p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    const stats = $$("[data-count]");
+    const statsObs = new IntersectionObserver((entries)=>{
+      entries.forEach(ent=>{
+        if(ent.isIntersecting){
+          animateCount(ent.target);
+          statsObs.unobserve(ent.target);
+        }
+      });
+    }, { threshold: 0.6 });
+    stats.forEach(s => statsObs.observe(s));
+
+    /* =========================================================
+       SKILLS BARS
+    ========================================================= */
+    const skillEls = $$(".skill");
+    const skillObs = new IntersectionObserver((entries)=>{
+      entries.forEach(ent=>{
+        if(ent.isIntersecting){
+          const val = Number(ent.target.dataset.skill || "0");
+          const bar = ent.target.querySelector(".bar > i");
+          if(bar) bar.style.width = Math.max(0, Math.min(100, val)) + "%";
+          skillObs.unobserve(ent.target);
+        }
+      });
+    }, { threshold: 0.25 });
+    skillEls.forEach(el => skillObs.observe(el));
+
+    /* =========================================================
+       PROJECTS RENDER + FILTER + SEARCH
+    ========================================================= */
+    const projectsGrid = $("#projectsGrid");
+    const filtersEl = $("#filters");
+    const searchInput = $("#projectSearch");
+
+    const allCategories = ["Todos", ...Array.from(new Set(projects.map(p => p.category)))];
+    let currentCategory = "Todos";
+    let searchQuery = "";
+
+    function renderFilters(){
+      filtersEl.innerHTML = "";
+      allCategories.forEach(cat=>{
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "filter" + (cat === currentCategory ? " active" : "");
+        b.textContent = cat;
+        b.addEventListener("click", ()=>{
+          currentCategory = cat;
+          renderFilters();
+          renderProjects();
+        });
+        filtersEl.appendChild(b);
+      });
+    }
+
+    function projectCard(p){
+      const el = document.createElement("article");
+      el.className = "card project reveal show";
+      el.innerHTML = `
+        <div class="thumb" aria-hidden="true"></div>
+        <div class="tagrow">${p.tags.map(t => `<span class="tag">${t}</span>`).join("")}</div>
+        <h3>${p.title}</h3>
+        <p>${p.summary}</p>
+        <div class="row">
+          <span class="meta">${p.category} • ${p.year}</span>
+          <button class="btn small" type="button" data-open="${p.id}">Ver</button>
+        </div>
+      `;
+      return el;
+    }
+
+    function renderProjects(){
+      const q = searchQuery.trim().toLowerCase();
+
+      const filtered = projects.filter(p=>{
+        const catOk = currentCategory === "Todos" || p.category === currentCategory;
+        const text = (p.title + " " + p.summary + " " + p.tags.join(" ") + " " + p.stack.join(" ")).toLowerCase();
+        const qOk = !q || text.includes(q);
+        return catOk && qOk;
+      });
+
+      projectsGrid.innerHTML = "";
+      if(filtered.length === 0){
+        const empty = document.createElement("div");
+        empty.className = "card";
+        empty.style.padding = "16px";
+        empty.innerHTML = `<strong>Nenhum projeto encontrado</strong><div style="color:var(--muted);font-size:13px;margin-top:6px">Tente outro termo ou remova o filtro.</div>`;
+        projectsGrid.appendChild(empty);
+        return;
+      }
+
+      filtered.forEach(p => projectsGrid.appendChild(projectCard(p)));
+    }
+
+    renderFilters();
+    renderProjects();
+
+    searchInput.addEventListener("input", (e)=>{
+      searchQuery = e.target.value || "";
+      renderProjects();
+    });
+
+    /* =========================================================
+       MODAL
+    ========================================================= */
+    const modal = $("#modal");
+    const closeModalBtn = $("#closeModalBtn");
+    const modalTitle = $("#modalTitle");
+    const modalSubtitle = $("#modalSubtitle");
+    const modalInfo = $("#modalInfo");
+    const modalLiveBtn = $("#modalLiveBtn");
+    const modalCodeBtn = $("#modalCodeBtn");
+
+    function openModal(projectId){
+      const p = projects.find(x => x.id === projectId);
+      if(!p) return;
+
+      modalTitle.textContent = p.title;
+      modalSubtitle.textContent = `${p.category} • ${p.year} • ${p.stack.join(" / ")}`;
+
+      modalInfo.innerHTML = `
+        <div class="row"><span>Categoria</span><b>${p.category}</b></div>
+        <div class="row"><span>Tecnologias</span><b>${p.stack.join(", ")}</b></div>
+        <div class="row"><span>Destaques</span><b>${p.highlights.join(" • ")}</b></div>
+        <div class="row"><span>Tags</span><b>${p.tags.join(", ")}</b></div>
+      `;
+
+      modalLiveBtn.href = p.liveUrl || "#";
+      modalCodeBtn.href = p.codeUrl || "#";
+
+      modal.classList.add("show");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal(){
+      modal.classList.remove("show");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    }
+
+    projectsGrid.addEventListener("click", (e)=>{
+      const btn = e.target.closest("[data-open]");
+      if(!btn) return;
+      openModal(btn.getAttribute("data-open"));
+    });
+
+    closeModalBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e)=>{
+      if(e.target === modal) closeModal();
+    });
+    document.addEventListener("keydown", (e)=>{
+      if(e.key === "Escape" && modal.classList.contains("show")) closeModal();
+    });
+
+    /* =========================================================
+       TESTIMONIALS SLIDER
+    ========================================================= */
+    const track = $("#track");
+    const prevTest = $("#prevTest");
+    const nextTest = $("#nextTest");
+    let tIndex = 0;
+
+    function slideTestimonials(dir){
+      const cards = track.children.length;
+      const visible = window.matchMedia("(max-width:560px)").matches ? 1 :
+                      window.matchMedia("(max-width:980px)").matches ? 2 : 3;
+      const maxIndex = Math.max(0, cards - visible);
+
+      tIndex = Math.max(0, Math.min(maxIndex, tIndex + dir));
+      const card = track.children[0];
+      const gap = 12;
+      const w = card.getBoundingClientRect().width + gap;
+      track.style.transform = `translateX(${-tIndex * w}px)`;
+    }
+
+    prevTest.addEventListener("click", ()=> slideTestimonials(-1));
+    nextTest.addEventListener("click", ()=> slideTestimonials(1));
+    window.addEventListener("resize", ()=> slideTestimonials(0));
+
+    /* =========================================================
+       CONTACT ACTIONS
+    ========================================================= */
+    $("#year").textContent = new Date().getFullYear();
+
+    $("#copyEmailBtn").addEventListener("click", async ()=>{
+      await copyToClipboard(CONFIG.emailToCopy);
+      toast("Copiado!", "Seu e-mail foi copiado para a área de transferência.");
+    });
+
+    $("#copyLinkBtn").addEventListener("click", async ()=>{
+      await copyToClipboard(CONFIG.portfolioUrl);
+      toast("Link copiado!", "Agora é só colar e enviar no WhatsApp.");
+    });
+
+    $("#openWhatsBtn").addEventListener("click", ()=>{
+      const url = `https://wa.me/${CONFIG.whatsapp.phone}?text=${encodeURIComponent(CONFIG.whatsapp.msg)}`;
+      window.open(url, "_blank", "noopener,noreferrer");
+    });
+
+    $("#downloadBtn").addEventListener("click", ()=>{
+      const content = [
+        "CHECKLIST RAPIDO - LANDING / PORTFOLIO",
+        "",
+        "1) Qual o objetivo da página?",
+        "2) Público-alvo (quem vai ver)?",
+        "3) Conteúdo: serviços, diferenciais, depoimentos, FAQ",
+        "4) CTA (WhatsApp? Formulário? Link?)",
+        "5) Logo/cores/fotos (se não tiver, eu ajusto com um padrão)",
+        "6) Seções que precisa ter",
+        "7) Prazo + número de revisões",
+        "",
+        "Dica: Escopo simples evita retrabalho."
+      ].join("\\n");
+
+      const blob = new Blob([content], {type:"text/plain;charset=utf-8"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "checklist-landing-portfolio.txt";
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast("Baixou!", "Checklist gerado com sucesso.");
+    });
+
+    /* =========================================================
+       FORM (simulação)
+    ========================================================= */
+    const form = $("#contactForm");
+    const formAlert = $("#formAlert");
+
+    function showAlert(el, type, msg){
+      el.className = "alert " + (type === "ok" ? "ok" : "err");
+      el.textContent = msg;
+      el.style.display = "block";
+    }
+
+    form.addEventListener("submit", (e)=>{
+      e.preventDefault();
+
+      const name = $("#name").value.trim();
+      const email = $("#email").value.trim();
+      const message = $("#message").value.trim();
+
+      const emailOk = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email);
+
+      if(name.length < 2){
+        showAlert(formAlert, "err", "Informe um nome válido (mínimo 2 caracteres).");
+        return;
+      }
+      if(!emailOk){
+        showAlert(formAlert, "err", "Informe um e-mail válido.");
+        return;
+      }
+      if(message.length < 10){
+        showAlert(formAlert, "err", "Explique melhor o que você precisa (mínimo 10 caracteres).");
+        return;
+      }
+
+      // simulação
+      showAlert(formAlert, "ok", "Mensagem validada! (Aqui você integraria com back-end / serviço de envio.)");
+      toast("Enviado!", "Simulação de envio concluída.");
+      form.reset();
+    });
+
+    /* =========================================================
+       BACK TO TOP
+    ========================================================= */
+    const backTop = $("#backTop");
+    $("#backTopBtn").addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
+
+    window.addEventListener("scroll", ()=>{
+      if(window.scrollY > 800) backTop.classList.add("show");
+      else backTop.classList.remove("show");
+    });
+
+    /* =========================================================
+       SPARKLINE (canvas)
+    ========================================================= */
+    const canvas = $("#sparkCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas(){
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.floor(rect.width * devicePixelRatio);
+      canvas.height = Math.floor(rect.height * devicePixelRatio);
+      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    let t = 0;
+    function drawSpark(){
+      t += 0.02;
+      const w = canvas.getBoundingClientRect().width;
+      const h = canvas.getBoundingClientRect().height;
+
+      ctx.clearRect(0,0,w,h);
+
+      // grid
+      ctx.globalAlpha = 0.35;
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--border");
+      ctx.lineWidth = 1;
+      for(let i=1;i<6;i++){
+        ctx.beginPath();
+        ctx.moveTo(0, (h/6)*i);
+        ctx.lineTo(w, (h/6)*i);
+        ctx.stroke();
+      }
+
+      // line
+      ctx.globalAlpha = 1;
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--primary").trim() || "#3b82f6";
+      ctx.beginPath();
+
+      const points = 42;
+      for(let i=0;i<=points;i++){
+        const x = (w/points)*i;
+        const wave = Math.sin(t + i*0.22) * 0.22 + Math.cos(t*0.9 + i*0.14) * 0.12;
+        const y = (h*0.60) - (wave * h*0.5);
+        if(i===0) ctx.moveTo(x,y);
+        else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+
+      // dots
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#22c55e";
+      for(let k=0;k<4;k++){
+        const i = Math.floor((points/4)*k + (Math.sin(t)*2));
+        const x = (w/points)*i;
+        const wave = Math.sin(t + i*0.22) * 0.22 + Math.cos(t*0.9 + i*0.14) * 0.12;
+        const y = (h*0.60) - (wave * h*0.5);
+        ctx.beginPath();
+        ctx.arc(x,y,4,0,Math.PI*2);
+        ctx.fill();
+      }
+
+      requestAnimationFrame(drawSpark);
+    }
+    requestAnimationFrame(drawSpark);
+
+    /* =========================================================
+       DEFAULT THEME (if none saved): follow system preference
+    ========================================================= */
+    if(!savedTheme){
+      const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+      setTheme(prefersLight ? "light" : "dark");
+    }
+
+  </script>
 </body>
 </html>
